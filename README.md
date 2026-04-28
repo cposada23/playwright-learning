@@ -1,10 +1,20 @@
 # playwright-learning
 
-Personal sandbox for **Playwright + Claude Code workflows** — runs the
-3 pedagogical exercises from the upstream playbook
-[`browser-automation-playwright.md`](https://github.com/cposada23/AI_knowledge/blob/main/wiki/playbooks/claude-code-workflows/browser-automation-playwright.md)
-§11. Throwaway by design — once the exercises are done, this repo
-stays as portfolio of the learning.
+Personal sandbox for **Playwright + Claude Code workflows**. Three
+self-contained pedagogical exercises, each a small disposable script
+that demonstrates one workflow:
+
+1. **QA loop** — generate a Playwright TypeScript script with Claude
+   Code, run it against a public form-validation practice site, fix
+   bugs in a tight loop until the validator passes.
+2. **Scraping with learning loop** — initial scrape → schema
+   discovery → refine. Output goes to a CSV.
+3. **Storage state** — dump an authenticated browser session to a
+   JSON file, reuse the file on a second run to skip re-login.
+
+The repo is intentionally throwaway. The point is calibration: how
+long does a workflow take, what gotchas show up, when is Playwright
++ Claude Code the right tool and when is it overkill.
 
 ## What's in here
 
@@ -19,7 +29,7 @@ stays as portfolio of the learning.
 - `playwright/.auth/` — auth state JSONs (gitignored).
 - `screenshots/`, `data/`, `logs/` — run output (gitignored, each run
   reproducible from scratch).
-- `docs/qa-form-spec.md` — exercise 1 spec (created during Step 11.1.D.1).
+- `docs/qa-form-spec.md` — exercise 1 spec (created during Exercise 1 Step 1).
 
 ## Stack
 
@@ -30,7 +40,8 @@ stays as portfolio of the learning.
 
 ## How to run
 
-After Phase D setup (see [docs/learning-progress.md](docs/learning-progress.md) §11.0):
+After completing the setup steps in
+[docs/learning-progress.md](docs/learning-progress.md):
 
 ```sh
 pnpm qa             # exercise 1 — QA loop on practice.expandtesting.com
@@ -42,16 +53,6 @@ pnpm list-private   # exercise 3b — list private repos using stored state (fut
 Each script writes its outputs to `screenshots/<name>/`, `data/`,
 `logs/`, or root-level files like `bugs.md`. None of these are
 tracked.
-
-## Context
-
-This repo is part of the Kortex `playground/` sub-zone — a sandbox
-for throwaway experiments inside the larger Kortex personal knowledge
-graph. It's gitignored from the main Kortex repo via the wildcard
-`projects/kortex-lab/playground/*/`. The convention is documented at
-[Kortex `playground/README.md`](https://github.com/cposada23/AI_knowledge/blob/main/projects/kortex-lab/playground/README.md).
-The registry tracking this experiment lives at
-[Kortex `playground/registry.md`](https://github.com/cposada23/AI_knowledge/blob/main/projects/kortex-lab/playground/registry.md).
 
 ## License
 

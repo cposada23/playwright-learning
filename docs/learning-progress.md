@@ -4,34 +4,31 @@
 > session mid-step, find the first unchecked box below and resume
 > there. Each step has: action (the exact command or task),
 > verification (binary check — did it work?), output (what to
-> paste/log), and insights (anything surprising worth promoting
-> to the upstream playbook).
+> paste/log), and insights (anything surprising worth recording).
 >
 > **Cross-references:**
 > - PRD: [PRD.md](PRD.md)
-> - Upstream playbook: [browser-automation-playwright.md §11](https://github.com/cposada23/AI_knowledge/blob/main/wiki/playbooks/claude-code-workflows/browser-automation-playwright.md)
-> - Macro phase tracker (Kortex side): [output/sessions/2026-04-27.md](https://github.com/cposada23/AI_knowledge/blob/main/output/sessions/2026-04-27.md)
 
 ## Current step pointer
 
-**As of 2026-04-27:** Step 11.0.3 ✅ done (pnpm + Playwright + Chromium installed). **Next:** Step 11.0.4 (overwrite tsconfig.json).
+**As of 2026-04-27:** Setup Step 1 ✅ done (pnpm + Playwright + Chromium installed). **Next:** Setup Step 2 (overwrite `tsconfig.json`).
 
 _(Update this pointer at the end of each work session so the next session knows exactly where to resume.)_
 
 ---
 
-## Phase D — §11.0 Setup base
+## Setup
 
-The setup happens once at the top of the repo. After §11.0.8 verifies,
-all 3 exercises share the same `node_modules`, tsconfig, and Playwright
-install.
+The setup happens once at the top of the repo. After Setup Step 6
+verifies, all 3 exercises share the same `node_modules`, tsconfig, and
+Playwright install.
 
-### Step 11.0.3 — Initialize TypeScript + Playwright
+### Setup Step 1 — Initialize TypeScript + Playwright
 
-**Action:** run from inside this repo (subshell from Kortex parent):
+**Action:** run from inside this repo:
 
 ```sh
-( cd /Users/camiloposada/Documents/Courses/AI_knowledge/projects/kortex-lab/playground/playwright-learning && \
+( cd <path-to-this-repo> && \
   pnpm init && \
   pnpm add -D typescript @types/node tsx && \
   pnpm add -D @playwright/cli @playwright/test playwright && \
@@ -81,20 +78,18 @@ Versions confirmed:
 
 **Insights:**
 
-1. **Stack bleeding edge:** node v25.8.2 + TypeScript v6.0.3 + Playwright v1.59.1. TS v6 is the very recent major bump (most repos are still on v5). If anything in the next steps breaks unexpectedly, this combo is the first suspect. **Worth promoting to playbook §F as a calibration note.**
+1. **Stack bleeding edge:** node v25.8.2 + TypeScript v6.0.3 + Playwright v1.59.1. TS v6 is the very recent major bump (most repos are still on v5). If anything in the next steps breaks unexpectedly, this combo is the first suspect.
 2. **pnpm security warning:** `Ignored build scripts: esbuild@0.27.7. Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.` This is pnpm's default security posture — it blocks post-install scripts from packages until explicitly approved. Not an error. Can be ignored for this exercise; in production we'd run `pnpm approve-builds` and approve `esbuild` (which `tsx` depends on).
-3. **`@playwright/cli` is at v0.1.9** — much lower version than `playwright` (v1.59.1) or `@playwright/test` (v1.59.1). Confirms the playbook §2.4 distinction: `@playwright/cli` is a separate, newer (Microsoft 2026) thin CLI package, not the same versioning as the core library.
-4. **Chrome for Testing, not regular Chrome:** Playwright downloads "Chrome for Testing" (CfT) builds, which are pinned versions Google maintains specifically for automation. Different from the Chrome you have installed via brew/Apple. Lives in `~/Library/Caches/ms-playwright/` — gitignored from this repo automatically (cache, not project file).
+3. **`@playwright/cli` is at v0.1.9** — much lower version than `playwright` (v1.59.1) or `@playwright/test` (v1.59.1). The CLI package is a separate, newer (Microsoft 2026) thin CLI package, not co-versioned with the core library.
+4. **Chrome for Testing, not regular Chrome:** Playwright downloads "Chrome for Testing" (CfT) builds, which are pinned versions Google maintains specifically for automation. Different from the Chrome installed via brew/Apple. Lives in `~/Library/Caches/ms-playwright/` — outside this repo (cache, not project file).
 
 **Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
-### Step 11.0.4 — Configure tsconfig.json
+### Setup Step 2 — Configure tsconfig.json
 
-**Action:** replace the auto-generated `tsconfig.json` content with the
-playbook §11.0.4 version. Use the Edit tool from Claude Code, or open
-in VS Code:
+**Action:** replace the auto-generated `tsconfig.json` content with:
 
 ```json
 {
@@ -132,7 +127,7 @@ _(any tripping point — e.g. `tsc --init` already had options that conflicted w
 
 ---
 
-### Step 11.0.5 — Configure package.json
+### Setup Step 3 — Configure package.json
 
 **Action:** in `package.json`:
 
@@ -165,7 +160,7 @@ _(e.g. ESM vs CJS conflicts when running `tsx`)_
 
 ---
 
-### Step 11.0.6 — Extended .gitignore
+### Setup Step 4 — Extended .gitignore
 
 **Action:** append the following to the existing `.gitignore` (Node
 template) created by gh:
@@ -180,8 +175,8 @@ logs/
 
 **Why:** `screenshots/`, `data/`, `logs/` are run output — each run
 should be reproducible from scratch, no committed artifacts. `.auth/`
-is auth state JSON with valid session tokens — never commit. `.playwright-cli/`
-is local cache.
+is auth state JSON with valid session tokens — never commit.
+`.playwright-cli/` is local cache.
 
 **Verification:**
 
@@ -200,15 +195,15 @@ _(e.g. did the Node template already cover any of these?)_
 
 ---
 
-### Step 11.0.7 — Initial commit + push
+### Setup Step 5 — Initial commit + push
 
 **Action:** commit the scaffold and push to GitHub.
 
 ```sh
-( cd /Users/camiloposada/Documents/Courses/AI_knowledge/projects/kortex-lab/playground/playwright-learning && \
+( cd <path-to-this-repo> && \
   git add . && \
   git status && \
-  git commit -m "chore: initial playwright sandbox scaffold (§11.0)" && \
+  git commit -m "chore: initial sandbox scaffold (setup)" && \
   git push origin main )
 ```
 
@@ -230,12 +225,12 @@ _(any push issue — auth, permissions, line endings)_
 
 ---
 
-### Step 11.0.8 — Verify setup
+### Setup Step 6 — Verify setup
 
 **Action:**
 
 ```sh
-( cd /Users/camiloposada/Documents/Courses/AI_knowledge/projects/kortex-lab/playground/playwright-learning && \
+( cd <path-to-this-repo> && \
   pnpm exec playwright-cli --version && \
   pnpm exec playwright --version && \
   node -v )
@@ -257,24 +252,19 @@ _(e.g. version mismatch between @playwright/cli and playwright; node < 20)_
 
 **Step status:** [ ] not started · [ ] in-progress · [ ] done
 
-**End of Phase D — Setup base complete. Next: Phase E §11.1 QA Loop exercise.**
+**End of Setup. Next: Exercise 1.**
 
 ---
 
-## Phase E — §11.1 QA Loop exercise (Form Validator)
+## Exercise 1 — QA Loop (Form Validator)
 
 Target: [https://practice.expandtesting.com/notes/app/register](https://practice.expandtesting.com/notes/app/register)
 
-### Step 11.1.D.1 — Create spec file
+### Exercise 1 Step 1 — Create spec file
 
-**Action:** create `docs/qa-form-spec.md` with the spec from playbook §11.1.D.1
-(target URL, happy path, 3 edge cases, results format).
-
-Full content of the spec is in the playbook — copy it verbatim into
-`docs/qa-form-spec.md`. Or generate it with Claude Code via:
-
-> "Create docs/qa-form-spec.md with the content from §11.1.D.1 of
-> https://github.com/cposada23/AI_knowledge/blob/main/wiki/playbooks/claude-code-workflows/browser-automation-playwright.md"
+**Action:** create `docs/qa-form-spec.md` describing target URL, happy
+path, 3 edge cases (invalid email, weak password, mismatched
+confirm password), and the format for results.
 
 **Verification:**
 
@@ -293,29 +283,21 @@ _(e.g. did Claude Code copy the spec verbatim or reword it? Reword is fine if se
 
 ---
 
-### Step 11.1.D.2 — Generate the script via Claude Code (plan mode first)
+### Exercise 1 Step 2 — Generate the script via Claude Code (plan mode first)
 
 **Action:** open Claude Code from inside the repo, enter plan mode (`Shift+Tab`),
-paste the request from playbook §11.1.D.2 verbatim:
+ask for a Playwright script that validates the signup form per
+`docs/qa-form-spec.md` with these requirements:
 
-```
-Plan: necesito un script Playwright en TypeScript que valide el form
-de signup de https://practice.expandtesting.com/notes/app/register
-según el spec en docs/qa-form-spec.md.
-
-Requirements:
-- Path del script: scripts/qa-form.ts
-- Headed mode (querés ver el browser).
-- Generar email único cada run (usá Date.now() suffix).
-- Screenshot por cada paso a screenshots/qa-form/<step>.png.
-- bugs.md al final con resultados de los 4 checks (1 happy path + 3
-  edge cases).
-- Script que sale con exit code 0 si todo OK, 1 si hay bug.
-- Usar getByRole / getByLabel (semantic selectors), no CSS classes.
-- Timeout de 5s por interacción, 10s para espera de redirect.
-
-NO ejecutar el script todavía. Mostrame el código primero.
-```
+- Path: `scripts/qa-form.ts`
+- Headed mode (so you see the browser)
+- Generate unique email per run (`Date.now()` suffix)
+- Screenshot per step to `screenshots/qa-form/<step>.png`
+- `bugs.md` at the end with results of all 4 checks
+- Exit code 0 if all OK, 1 if any bug
+- Semantic selectors (`getByRole` / `getByLabel`), no CSS classes
+- 5s timeout per interaction, 10s for redirects
+- DO NOT run the script yet — show the code first
 
 Accept the plan, let Claude write `scripts/qa-form.ts`.
 
@@ -331,13 +313,13 @@ _(paste `wc -l scripts/qa-form.ts` + first 5 lines)_
 
 **Insights:**
 
-_(e.g. did Claude pick `@playwright/test` or `playwright` programmatic? Playbook §3 prefers `@playwright/cli` style for ad-hoc; check if Claude inferred this correctly.)_
+_(e.g. did Claude pick `@playwright/test` or `playwright` programmatic? Either is fine; note which one and why.)_
 
 **Step status:** [ ] not started · [ ] in-progress · [ ] done
 
 ---
 
-### Step 11.1.D.3 — Review the script (mandatory before running)
+### Exercise 1 Step 3 — Review the script (mandatory before running)
 
 **Action:** read `scripts/qa-form.ts` end to end. Check:
 
@@ -370,13 +352,12 @@ _(e.g. which checks Claude usually misses — useful for next exercise)_
 
 ---
 
-### Step 11.1.D.4 — First run
+### Exercise 1 Step 4 — First run
 
 **Action:**
 
 ```sh
-( cd /Users/camiloposada/Documents/Courses/AI_knowledge/projects/kortex-lab/playground/playwright-learning && \
-  pnpm qa )
+( cd <path-to-this-repo> && pnpm qa )
 ```
 
 Watch the browser open. Mental notes:
@@ -404,7 +385,7 @@ _(e.g. how long the run took; any flake; did Chromium prompt for permissions)_
 
 ---
 
-### Step 11.1.D.5 — Review the output
+### Exercise 1 Step 5 — Review the output
 
 **Action:**
 
@@ -430,7 +411,7 @@ _(e.g. screenshot quality — were they too small / cropped / wrong moment)_
 
 ---
 
-### Step 11.1.D.6 — Fix loop (until bugs.md is empty)
+### Exercise 1 Step 6 — Fix loop (until bugs.md is empty)
 
 **Action:** for each bug, decide:
 
@@ -458,18 +439,12 @@ _(if iterations > 5, the spec was probably ambiguous — note what was unclear)_
 
 ---
 
-### Step 11.1.D.7 — Promote to skill (optional)
+### Exercise 1 Step 7 — Promote to skill (optional)
 
 **Action:** if you liked the script and want to invoke it by name from
-any directory:
-
-```sh
-mkdir -p ~/.claude/skills/qa-form-expandtesting/scripts
-cp scripts/qa-form.ts ~/.claude/skills/qa-form-expandtesting/scripts/
-```
-
-Then create `~/.claude/skills/qa-form-expandtesting/SKILL.md` per
-playbook §11.1.D.7.
+any directory, copy it to your global Claude Code skills folder
+(`~/.claude/skills/qa-form-expandtesting/`) with a `SKILL.md`
+descriptor.
 
 **Verification:**
 
@@ -487,39 +462,38 @@ _(e.g. tradeoffs of project-scoped script vs global skill)_
 
 **Step status:** [ ] not started · [ ] in-progress · [ ] done · [ ] skipped
 
-**End of Phase E — §11.1 QA Loop exercise complete.**
+**End of Exercise 1.**
 
 ---
 
-## §11.2 Scraping with Learning Loop (future)
+## Exercise 2 — Scraping with Learning Loop (future)
 
-Future exercise. Detailed steps to be added when arriving here. See
-playbook §11.2 for the spec. Will scrape [github.com/trending](https://github.com/trending),
-output to `data/trending-YYYY-MM-DD.csv`. Demonstrates: initial scrape →
-schema discovery → refine.
+Future exercise. Detailed steps to be added when arriving here. Will
+scrape [github.com/trending](https://github.com/trending), output to
+`data/trending-YYYY-MM-DD.csv`. Demonstrates: initial scrape → schema
+discovery → refine.
 
 ---
 
-## §11.3 Storage State (future)
+## Exercise 3 — Storage State (future)
 
-Future exercise. Detailed steps to be added when arriving here. See
-playbook §11.3 for the spec. Will dump GitHub auth state to
-`playwright/.auth/github.json`, then list private repos in a second
-script that consumes the state. Demonstrates: persistent auth pattern.
+Future exercise. Detailed steps to be added when arriving here. Will
+dump GitHub auth state to `playwright/.auth/github.json`, then list
+private repos in a second script that consumes the state.
+Demonstrates: persistent auth pattern.
 
 ---
 
 ## Closure log
 
-When all 3 exercises (or whichever subset is decided) are done, log
-the closure here:
+When all exercises (or whichever subset is decided) are done, log the
+closure here:
 
 - **Closed date:** _(YYYY-MM-DD)_
 - **Exercises completed:** _(list which ones)_
 - **Exercises skipped + reason:** _(if any)_
-- **Insights promoted to playbook:**
-  - _(playbook section + insight summary; e.g. "§F Gotchas — added: pnpm peer dep warning on @playwright/cli@1.x can be ignored")_
+- **Notable insights:**
+  - _(insight summary; e.g. "pnpm peer dep warning on @playwright/cli@1.x can be ignored")_
 - **Final iteration count per exercise:** _(calibration data for future)_
 - **Final time per exercise:** _(calibration data)_
 - **Decision on local clone:** _(kept | deleted)_
-- **Registry status updated:** [ ] yes — entry moved Active → Archived in [Kortex playground/registry.md](https://github.com/cposada23/AI_knowledge/blob/main/projects/kortex-lab/playground/registry.md)
