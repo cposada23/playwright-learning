@@ -11,7 +11,7 @@
 
 ## Current step pointer
 
-**As of 2026-04-28:** Setup Steps 1-4 ✅ done (pnpm + Playwright + Chromium installed; `tsconfig.json` overwritten per spec; `package.json` configured with `"type": "module"` + 4 scripts; `.gitignore` extended with 5 Playwright entries). **Next:** Setup Step 5 (initial commit + push of the full scaffold to `https://github.com/cposada23/playwright-learning`).
+**As of 2026-04-28:** **Setup ✅ COMPLETE (Steps 1-6 done).** All 3 versions verified: `playwright-cli 0.1.9`, `playwright 1.59.1`, `node v25.8.2`. **Next:** Exercise 1 Step 1 — create `docs/qa-form-spec.md` (target URL: `https://practice.expandtesting.com/notes/app/register`, happy path + 3 edge cases).
 
 _(Update this pointer at the end of each work session so the next session knows exactly where to resume.)_
 
@@ -259,19 +259,37 @@ Verified Node entries intact: `*.log`, `node_modules/`, `.env`, `.env.*` still p
 
 **Verification:**
 
-- [ ] `git status` after push shows `working tree clean`
-- [ ] `git log --oneline` shows the new commit at HEAD
-- [ ] [https://github.com/cposada23/playwright-learning](https://github.com/cposada23/playwright-learning) shows the new files (`package.json`, `tsconfig.json`, etc.)
+- [x] `git status` after push shows `working tree clean`
+- [x] `git log --oneline` shows the new commit at HEAD
+- [x] [https://github.com/cposada23/playwright-learning](https://github.com/cposada23/playwright-learning) shows the new files (`package.json`, `tsconfig.json`, etc.) — push succeeded with range `5d58b65..29a7c8b`, files are on origin/main
 
-**Output:**
+**Output (run on 2026-04-28):**
 
-_(paste git log --oneline + sha of the new commit)_
+```
+[main 29a7c8b] chore: initial sandbox scaffold (setup)
+ 5 files changed, 530 insertions(+), 19 deletions(-)
+ create mode 100644 package.json
+ create mode 100644 pnpm-lock.yaml
+ create mode 100644 tsconfig.json
+
+git push: 5d58b65..29a7c8b  main -> main
+
+git log --oneline -5:
+29a7c8b chore: initial sandbox scaffold (setup)
+5d58b65 docs: make repo self-contained — remove all external references
+e784b02 docs(progress): step 11.0.3 done — pnpm + Playwright + Chromium installed
+7e826a2 docs(prd): mark Phase C done, Phase D as next
+07f56d0 docs: bump current step pointer to Phase D Step 11.0.3
+```
 
 **Insights:**
 
-_(any push issue — auth, permissions, line endings)_
+1. **Single batched commit** covered Steps 2+3+4 (config) + the 3 untracked scaffold files left over from Step 1 (`package.json`, `pnpm-lock.yaml`, `tsconfig.json`). 5 files / 530 insertions / 19 deletions in one atomic commit. Cleaner than 3 separate commits — the scaffold is logically one unit.
+2. **No push issues.** Push succeeded on first try (auth via stored gh credentials). No line-ending warnings (this is a fresh repo on macOS, no Windows contributors yet to trigger CRLF↔LF conversion).
+3. **`git add .` was safe** because `.gitignore` was already extended in Step 4. The Node template covered `.env` from the start; Step 4 added the Playwright-specific exclusions. No accidental staging — verified via `git status` between `add` and `commit`.
+4. **Builds on top of the de-leaked baseline.** Previous commit `5d58b65` was the fix-forward from the 2026-04-27 Kortex-leak incident ("make repo self-contained — remove all external references"). The scaffold landed on a clean, portable baseline — no pollution to clean up later.
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
@@ -288,19 +306,26 @@ _(any push issue — auth, permissions, line endings)_
 
 **Verification:** all 3 commands print versions, no errors:
 
-- [ ] `playwright-cli --version` prints version (e.g. `1.x.x`)
-- [ ] `playwright --version` prints version (e.g. `Version 1.x.x`)
-- [ ] `node -v` prints `v20.x.x` or higher
+- [x] `playwright-cli --version` prints version (e.g. `1.x.x`) — got `0.1.9` (note: spec example was wrong, see Insight 1)
+- [x] `playwright --version` prints version (e.g. `Version 1.x.x`) — got `Version 1.59.1`
+- [x] `node -v` prints `v20.x.x` or higher — got `v25.8.2`
 
-**Output:**
+**Output (run on 2026-04-28):**
 
-_(paste the 3 version strings)_
+```
+playwright-cli --version → 0.1.9
+playwright --version     → Version 1.59.1
+node -v                  → v25.8.2
+```
 
 **Insights:**
 
-_(e.g. version mismatch between @playwright/cli and playwright; node < 20)_
+1. **Spec verification text was wrong on `playwright-cli`.** The verification check expected `1.x.x`, but `@playwright/cli` is at `0.1.9` — already noted in Step 1 Insight 3. The verification text in the playbook upstream should be loosened to "prints any version" or specifically "prints `0.x.x`". **Promote to upstream playbook §F (Gotchas) at session close.**
+2. **Node v25.8.2** is well above the v20 floor — but it's also a bleeding-edge version (most projects are still on v20/v22). Already noted in Step 1 Insight 1 as a flag for future debugging if anything breaks unexpectedly. Re-verified here: at minimum, the 3 binary tools all run on v25 without errors.
+3. **No version mismatch between `@playwright/cli` and `playwright`/`@playwright/test`.** The 0.1.9 vs 1.59.1 gap is *expected* (different packages, different versioning lines — see Step 1 Insight 3), not a mismatch to worry about.
+4. **End of Setup confirmed clean.** All 6 setup steps green. Repo ready for Exercise 1 (QA Loop).
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 **End of Setup. Next: Exercise 1.**
 
