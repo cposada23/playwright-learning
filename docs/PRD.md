@@ -71,10 +71,13 @@ full install step.
 
 ## Status
 
+_(See [docs/learning-progress.md](learning-progress.md) "Current step pointer" for the live status.
+This Status block is a high-level mirror — update both together.)_
+
 - [x] Phase A done (Kortex bookkeeping for playground convention)
 - [x] Phase B done (gh repo created + cloned into Kortex playground/)
-- [/] Phase C in-progress (this PRD + learning-progress.md + README + initial commit)
-- [ ] Phase D pending (§11.0 setup base — 6 steps)
+- [x] Phase C done (this PRD + learning-progress.md + README + scaffold committed at `7e0f103`/`07f56d0`)
+- [ ] Phase D pending (§11.0 setup base — 6 steps) ← **NEXT**
 - [ ] Phase E pending (§11.1 QA Loop exercise — 7 sub-steps)
 - [ ] Future: §11.2 Scraping exercise
 - [ ] Future: §11.3 Storage state exercise
