@@ -14,7 +14,7 @@
 
 ## Current step pointer
 
-**As of 2026-04-27:** Phases A-C ✅ done (Kortex bookkeeping + gh repo + scaffold). **Next:** Phase D Step 11.0.3 (initialize TypeScript + Playwright via pnpm).
+**As of 2026-04-27:** Step 11.0.3 ✅ done (pnpm + Playwright + Chromium installed). **Next:** Step 11.0.4 (overwrite tsconfig.json).
 
 _(Update this pointer at the end of each work session so the next session knows exactly where to resume.)_
 
@@ -42,24 +42,51 @@ install.
 
 **Verification:** all of these must be true after the command:
 
-- [ ] `package.json` exists at repo root
-- [ ] `pnpm-lock.yaml` exists at repo root
-- [ ] `tsconfig.json` exists at repo root (created by `tsc --init`)
-- [ ] `node_modules/playwright/` directory exists
-- [ ] `node_modules/@playwright/cli/` directory exists
-- [ ] `node_modules/@playwright/test/` directory exists
-- [ ] All 5 folders exist: `playwright/.auth/`, `scripts/`, `data/`, `screenshots/`, `logs/`
-- [ ] Chromium binary downloaded (check via next step's verification)
+- [x] `package.json` exists at repo root
+- [x] `pnpm-lock.yaml` exists at repo root
+- [x] `tsconfig.json` exists at repo root (created by `tsc --init`)
+- [x] `node_modules/playwright/` directory exists
+- [x] `node_modules/@playwright/cli/` directory exists
+- [x] `node_modules/@playwright/test/` directory exists
+- [x] All 5 folders exist: `playwright/.auth/`, `scripts/`, `data/`, `screenshots/`, `logs/`
+- [x] Chromium binary downloaded (Chrome for Testing 147.0.7727.15 to `~/Library/Caches/ms-playwright/`)
 
-**Output (paste relevant after running):**
+**Output (run on 2026-04-27):**
 
-_(installed Playwright version, any warnings, time to install)_
+```
+devDependencies installed (first batch):
++ @types/node 25.6.0
++ tsx 4.21.0
++ typescript 6.0.3
+
+devDependencies installed (second batch):
++ @playwright/cli 0.1.9
++ @playwright/test 1.59.1
++ playwright 1.59.1
+
+tsconfig.json: created (default content from `tsc --init`)
+
+Browsers downloaded to ~/Library/Caches/ms-playwright/:
+- Chromium 147.0.7727.15 (playwright v1217) — 165.5 MiB
+- FFmpeg v1011 — 1 MiB
+- Chrome Headless Shell 147.0.7727.15 — 92 MiB
+Total download: ~258 MiB
+
+Total time: ~3 min (mostly Chromium download).
+
+Versions confirmed:
+- playwright --version → "Version 1.59.1"
+- playwright-cli --version → "0.1.9"
+```
 
 **Insights:**
 
-_(any gotcha — e.g. pnpm flagging peer deps, registry timeouts, version conflicts)_
+1. **Stack bleeding edge:** node v25.8.2 + TypeScript v6.0.3 + Playwright v1.59.1. TS v6 is the very recent major bump (most repos are still on v5). If anything in the next steps breaks unexpectedly, this combo is the first suspect. **Worth promoting to playbook §F as a calibration note.**
+2. **pnpm security warning:** `Ignored build scripts: esbuild@0.27.7. Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.` This is pnpm's default security posture — it blocks post-install scripts from packages until explicitly approved. Not an error. Can be ignored for this exercise; in production we'd run `pnpm approve-builds` and approve `esbuild` (which `tsx` depends on).
+3. **`@playwright/cli` is at v0.1.9** — much lower version than `playwright` (v1.59.1) or `@playwright/test` (v1.59.1). Confirms the playbook §2.4 distinction: `@playwright/cli` is a separate, newer (Microsoft 2026) thin CLI package, not the same versioning as the core library.
+4. **Chrome for Testing, not regular Chrome:** Playwright downloads "Chrome for Testing" (CfT) builds, which are pinned versions Google maintains specifically for automation. Different from the Chrome you have installed via brew/Apple. Lives in `~/Library/Caches/ms-playwright/` — gitignored from this repo automatically (cache, not project file).
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
