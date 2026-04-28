@@ -14,7 +14,7 @@
 
 ## Current step pointer
 
-**As of 2026-04-27:** Phase C in-progress (this file just created). Next: complete Phase C scaffold → Phase D Step 11.0.3.
+**As of 2026-04-27:** Phases A-C ✅ done (Kortex bookkeeping + gh repo + scaffold). **Next:** Phase D Step 11.0.3 (initialize TypeScript + Playwright via pnpm).
 
 _(Update this pointer at the end of each work session so the next session knows exactly where to resume.)_
 
