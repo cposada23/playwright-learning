@@ -141,3 +141,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# Playwright (this repo)
+playwright/.auth/
+.playwright-cli/
+screenshots/
+data/
+logs/

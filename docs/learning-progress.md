@@ -11,7 +11,7 @@
 
 ## Current step pointer
 
-**As of 2026-04-27:** Setup Step 1 ✅ done (pnpm + Playwright + Chromium installed). **Next:** Setup Step 2 (overwrite `tsconfig.json`).
+**As of 2026-04-28:** Setup Steps 1-4 ✅ done (pnpm + Playwright + Chromium installed; `tsconfig.json` overwritten per spec; `package.json` configured with `"type": "module"` + 4 scripts; `.gitignore` extended with 5 Playwright entries). **Next:** Setup Step 5 (initial commit + push of the full scaffold to `https://github.com/cposada23/playwright-learning`).
 
 _(Update this pointer at the end of each work session so the next session knows exactly where to resume.)_
 
@@ -112,18 +112,39 @@ Versions confirmed:
 
 **Verification:**
 
-- [ ] `tsconfig.json` matches the block above exactly
-- [ ] `cat tsconfig.json | head -3` shows `{` `"compilerOptions": {` `"target": "es2022",`
+- [x] `tsconfig.json` matches the block above exactly
+- [x] `cat tsconfig.json | head -3` shows `{` `"compilerOptions": {` `"target": "es2022",`
 
-**Output:**
+**Output (run on 2026-04-28):**
 
-_(no command output expected — this is a file edit. Optionally paste `cat tsconfig.json` after.)_
+```json
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "outDir": "./dist",
+    "rootDir": "./scripts",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["scripts/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
+```
 
 **Insights:**
 
-_(any tripping point — e.g. `tsc --init` already had options that conflicted with manual replacement)_
+1. **TypeScript v6 `tsc --init` ships a much more opinionated default** than what the spec assumes. The auto-generated config from Step 1 included: `module: nodenext`, `target: esnext`, `verbatimModuleSyntax: true`, `isolatedModules: true`, `noUncheckedSideEffectImports: true`, `moduleDetection: force`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`, `jsx: react-jsx`, `sourceMap/declaration/declarationMap: true`. None of these are in the spec — the wholesale overwrite drops all of them.
+2. **`module: nodenext` → `module: esnext` + `moduleResolution: bundler`** is the meaningful divergence. `nodenext` enforces `.js` import suffixes and node-style ESM resolution; `bundler` is more permissive and matches how `tsx` (the runner used in Setup Step 3) actually resolves modules. The spec's choice is correct for this stack — `tsx` is bundler-like, not pure node ESM.
+3. **`target: es2022` vs `esnext`** — the spec pins to a stable target instead of letting TS v6 default to `esnext` (moving target). Cleaner for a learning repo where reproducibility matters more than bleeding-edge syntax.
+4. **No tripping points during overwrite.** Wholesale replace via Write tool, no merge needed. The original file's comments (e.g. `// Visit https://aka.ms/tsconfig...`) are gone — expected, the spec is comment-free.
+5. **`rootDir: "./scripts"` + `include: ["scripts/**/*"]`** anchors the compile scope to a single folder. Setup Step 1 already created `scripts/` empty — Step 3+4 will start populating it.
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
@@ -145,18 +166,31 @@ _(any tripping point — e.g. `tsc --init` already had options that conflicted w
 
 **Verification:**
 
-- [ ] `cat package.json | grep '"type"'` shows `"type": "module"`
-- [ ] `pnpm run` (with no args) lists `qa`, `scrape`, `login`, `list-private`
+- [x] `cat package.json | grep '"type"'` shows `"type": "module"`
+- [x] `pnpm run` (with no args) lists `qa`, `scrape`, `login`, `list-private`
 
-**Output:**
+**Output (run on 2026-04-28):**
 
-_(paste output of `pnpm run`)_
+```
+Commands available via "pnpm run":
+  qa
+    tsx scripts/qa-form.ts
+  scrape
+    tsx scripts/scrape-trending.ts
+  login
+    tsx scripts/login-and-dump-state.ts
+  list-private
+    tsx scripts/list-private-repos.ts
+```
 
 **Insights:**
 
-_(e.g. ESM vs CJS conflicts when running `tsx`)_
+1. **Wholesale replacement, not merge.** The default `pnpm init` shipped a `"scripts": { "test": "echo \"Error: no test specified\" && exit 1" }` placeholder. Spec says "Add (or replace)" — I replaced wholesale, dropping the default `test` stub. If a future exercise needs a `test` script (Vitest, Playwright test runner), it gets re-added then.
+2. **`"main": "index.js"` left intact.** Default from `pnpm init`. Not referenced by any of the new scripts (all entry points are `tsx scripts/*.ts`), so harmless to keep. Cleaner to leave the field than to delete and re-add when something needs it.
+3. **No ESM vs CJS conflict observed.** `"type": "module"` makes `.js` files ESM by default, but every entry point in the scripts section goes through `tsx` to `.ts` source — `tsx` handles ESM/CJS interop transparently for `.ts`. The `tsx` runner is exactly what makes `"type": "module"` safe to set without rewriting any existing JS.
+4. **`pnpm run` (no args) is the cleaner verification** vs `cat package.json | grep`. It both confirms the scripts are registered AND that `package.json` is valid JSON (a syntax error would break `pnpm run` before listing).
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
@@ -180,18 +214,34 @@ is auth state JSON with valid session tokens — never commit.
 
 **Verification:**
 
-- [ ] `cat .gitignore | tail -10` shows the 5 new lines
-- [ ] Existing Node entries (`node_modules/`, etc.) still present
+- [x] `cat .gitignore | tail -10` shows the 5 new lines
+- [x] Existing Node entries (`node_modules/`, etc.) still present
 
-**Output:**
+**Output (run on 2026-04-28):**
 
-_(paste tail of .gitignore)_
+```
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+.vite/
+
+# Playwright (this repo)
+playwright/.auth/
+.playwright-cli/
+screenshots/
+data/
+logs/
+```
+
+Verified Node entries intact: `*.log`, `node_modules/`, `.env`, `.env.*` still present (grep).
 
 **Insights:**
 
-_(e.g. did the Node template already cover any of these?)_
+1. **The `gh repo create --gitignore Node` template already had `logs`** (line 2 of the original, no trailing slash). Adding `logs/` is technically redundant but more explicit (matches directories only — `logs` matches both files and dirs). Followed the spec wholesale; the redundancy is benign and keeps all 5 playwright-specific entries grouped together.
+2. **None of the other 4 entries** (`playwright/.auth/`, `.playwright-cli/`, `screenshots/`, `data/`) were in the Node template — expected, since the template predates Playwright (and `data/` is a generic output convention specific to this learning repo).
+3. **Added a `# Playwright (this repo)` section header** to keep the additions identifiable as a group, separate from the Node template's organic sections (Logs, Diagnostic reports, Runtime data, etc.). Makes future cleanup obvious — the boundary between "GitHub default Node template" and "this repo's customizations" is explicit.
+4. **No accidental truncation.** Verified existing entries (`node_modules/`, `.env`, `*.log`) still present after the append via grep — sanity check that the Edit didn't replace more than intended.
 
-**Step status:** [ ] not started · [ ] in-progress · [ ] done
+**Step status:** [ ] not started · [ ] in-progress · [x] done
 
 ---
 
